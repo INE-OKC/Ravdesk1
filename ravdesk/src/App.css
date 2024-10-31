@@ -33,3 +33,35 @@ button {
 button:hover {
   opacity: 0.9;
 }
+
+/* src/App.css */
+
+/* Button styling */
+button {
+  padding: 10px;
+  font-size: 1rem;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:nth-of-type(1) {
+  background-color: #4CAF50; /* Approve Payment */
+}
+
+button:nth-of-type(3) {
+  background-color: #ff4d4f; /* Cancel Payment */
+}

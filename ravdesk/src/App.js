@@ -1,4 +1,3 @@
-
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
@@ -19,18 +18,17 @@ const App = () => {
     });
 
     const bscTestnetParams = {
-        chainId: '0x61',
-        chainName: 'Binance Smart Chain Testnet',
+        chainId: '80002',
+        chainName: 'Amoy',
         nativeCurrency: {
-            name: 'Binance Coin',
-            symbol: 'BNB',
+            name: 'Matic',
+            symbol: 'POL',
             decimals: 18
         },
-        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
-        blockExplorerUrls: ['https://testnet.bscscan.com']
+        rpcUrls: ['https://rpc-amoy.polygon.technology'],
+        blockExplorerUrls: ['https://www.oklink.com/amoy']
     };
 
-    // Connect to MetaMask and BSC Testnet
     const connectWallet = async () => {
         if (window.ethereum) {
             const chainId = await window.ethereum.request({ method: 'eth_chainId' });
@@ -49,7 +47,7 @@ const App = () => {
 
             const contractInstance = new web3Instance.eth.Contract(
                 EscrowContract,
-                '0xYourContractAddressHere'
+                '0xf5Fb3921f730cD5F2A2FCE89961dd7389e4Bde38'
             );
             setContract(contractInstance);
         } else {
@@ -57,7 +55,6 @@ const App = () => {
         }
     };
 
-    // Load contract status
     const loadContractStatus = async () => {
         if (contract) {
             const response = await contract.methods.getContractStatus().call();
@@ -70,20 +67,48 @@ const App = () => {
         }
     };
 
+    // Function to approve payment
+    const approvePayment = async () => {
+        if (contract && account) {
+            try {
+                await contract.methods.approvePayment().send({ from: account });
+                loadContractStatus(); // Refresh status
+                alert("Payment approved successfully!");
+            } catch (error) {
+                console.error("Error approving payment:", error);
+            }
+        }
+    };
+
+    // Function to cancel payment
+    const cancelPayment = async () => {
+        if (contract && account) {
+            try {
+                await contract.methods.cancelPayment().send({ from: account });
+                loadContractStatus(); // Refresh status
+                alert("Payment canceled successfully!");
+            } catch (error) {
+                console.error("Error canceling payment:", error);
+            }
+        }
+    };
+
     useEffect(() => {
         loadContractStatus();
     }, [contract]);
 
     return (
         <div className="App">
-            <h1>P2P Escrow Contract</h1>
-            <button onClick={connectWallet}>Connect to BSC Testnet</button>
+            <h1>Ravdesk Contract</h1>
+            <button onClick={connectWallet}>Connect to Amoy Testnet</button>
             {account && <p>Connected Account: {account}</p>}
             <ContractStatus status={status} />
             <MilestoneDetails contract={contract} />
+            {/* Approve and Cancel Payment Buttons */}
+            <button onClick={approvePayment} disabled={!account}>Approve Payment</button>
+            <button onClick={cancelPayment} disabled={!account}>Cancel Payment</button>
         </div>
     );
 };
 
 export default App;
-
